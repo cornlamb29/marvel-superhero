@@ -1,8 +1,16 @@
 import { Request, Response } from 'express'
 import db from '../models'
 import { setAuthCookie } from '../utils/auth'
+import { Model } from 'sequelize'
 
 const User = db.User
+
+// Add this interface
+interface UserInstance extends Model {
+  validatePassword(password: string): Promise<boolean>;
+  id: number;
+  email: string;
+}
 
 /**
  * Controller to signup a user
@@ -27,15 +35,15 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
  * @param {Request} req - Request object
  * @param {Response} res - Response object
  */
-export const login = async (req: Request, res: Response): Promise<Response | void> => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body
   try {
-    const user = await User.findOne({ where: { email } })
+    const user = await User.findOne({ where: { email } }) as UserInstance
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' })
+      res.status(401).json({ message: 'Invalid email or password' })
     }
     if (!(await user.validatePassword(password))) {
-      return res.status(401).json({ message: 'Invalid email or password' })
+      res.status(401).json({ message: 'Invalid email or password' })
     }
 
     setAuthCookie(res, { id: user.id, email: user.email })

@@ -6,8 +6,10 @@ import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useCurrentUser } from '@/store/auth'
 import useApi from '@/hooks/Api/useApi'
+import { UserJWTPayload } from '@/store/auth/types'
 import { SignupDialogProps } from './props'
 import './style.scss'
+
 
 /**
  * @description The signup dialog component
@@ -27,7 +29,7 @@ const SignupDialog = ({ showSignup: initialShowSignup, onClose, onSignup}: Signu
       const token = Cookies.get('auth')
       if (token) {
         try {
-          const decoded = jwtDecode(token)
+          const decoded = jwtDecode(token) as UserJWTPayload
           setCurrentUser(decoded)
         } catch (e) {
           console.error('Failed to decode token:', e)

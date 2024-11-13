@@ -19,7 +19,7 @@ import { MarvelCharacter } from '@/hooks/Api/types'
 import { TeamPositionsState } from '@/store/teamPositions/types'
 import { PositionInfo } from '@/store/positions/types'
 import { TeamPositions } from '@/hooks/Api/types'
-import SignupDialog from './components/signupDialog'
+import SignupDialog from './components/SignupDialog'
 import './style.scss'
 
 
@@ -46,7 +46,7 @@ const Navbar = (): React.ReactElement => {
     queryFn: async () => {
       if (!searchTerm) return []
       const response = await Characters.getByName(searchTerm)
-      return response.data ? response.data : []
+      return response ? response : []
     },
     enabled: searchTerm.length > 2, // Only fetch when search term is longer than 2 characters
     staleTime: 60000 // Cache results for 1 minute
@@ -56,8 +56,8 @@ const Navbar = (): React.ReactElement => {
     queryKey: ['character', characterId],
     queryFn: async () => {
       if (!characterId) return null
-      const response = await Characters.getById(characterId)
-      return response.data || null
+      const response = await Characters.getById(Number(characterId))
+      return response ?? null
     },
     enabled: !!characterId
   })
@@ -65,12 +65,15 @@ const Navbar = (): React.ReactElement => {
   const { mutate: createTeam } = useMutation({
     mutationFn: () => Characters.createTeam(teamName, Object.keys(teamPosition).reduce((acc, key) => {
       const position = key.split(' ')?.pop()?.toLowerCase() || ''
-      acc[position] = teamPosition[key]
+      if (position in acc) {
+        const value = teamPosition[key as keyof TeamPositionsState]
+        acc[position as keyof TeamPositions] = value ? Number(value) : undefined
+      }
       return acc
     }, {} as TeamPositions)),
     onSuccess: () => {
       setTeamName('')
-      setTeamPositions({})
+      setTeamPositions({} as TeamPositionsState)
       setSearchTerm('')
     }
   })  

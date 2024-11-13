@@ -1,16 +1,16 @@
 import { Sequelize, Model, ModelStatic } from 'sequelize'
-import config from '../config/config'
 import MarvelCharacterModel from './marvelCharacter'
 import UserModel from './user'
 import TeamModel from './team'
 import CharacterTeamModel from './characterTeam'
+const config = require('../config/config')
 
 const sequelize = new Sequelize(
-  config.development.database,
-  config.development.username,
-  config.development.password,
+  config.database,
+  config.username,
+  config.password,
   {
-    host: config.development.host,
+    host: config.host,
     dialect: 'postgres'
   }
 )

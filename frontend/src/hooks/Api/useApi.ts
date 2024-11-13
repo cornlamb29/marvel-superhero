@@ -35,11 +35,14 @@ const useApi = () => {
 
     const Characters = {
       getAll: (): Promise<MarvelCharacter[]> => requests.get('characters'),
-      getById: (id: number): Promise<MarvelCharacter> => requests.get(`characters/${id}`),
-      getByName: (name: string): Promise<MarvelCharacter[]> => requests.get(`characters/search/${name}`),
+      getById: (id: number): Promise<MarvelCharacter> => requests.get(`characters/${id}`)
+        .then((response: AxiosResponse) => response.data),
+      getByName: (name: string): Promise<MarvelCharacter[]> => requests.get(`characters/search/${name}`)
+        .then((response: AxiosResponse) => response.data),
       createTeam: (teamName: string, positions: TeamPositions): Promise<void> => 
         requests.post('characters/team', { teamName, positions }),
-      getUserTeams: (): Promise<Team[]> => requests.get('characters/teams'),
+      getUserTeams: (): Promise<Team[]> => requests.get('characters/teams')
+        .then((response: AxiosResponse) => response.data),
     }
 
     const Users = {

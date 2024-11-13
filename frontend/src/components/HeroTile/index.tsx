@@ -17,14 +17,14 @@ import './style.scss'
 const HeroTile = ({ title, name, onClick, className, children }: PropsWithChildren<TileProps>): React.ReactElement => {
   const [teamPosition] = useTeamPositions()
   const { Characters } = useApi()
-  const characterId = teamPosition[title]
+  const characterId = teamPosition[title as keyof typeof teamPosition]
 
   const { data: character } = useQuery({
     queryKey: ['character', characterId],
     queryFn: async () => {
-      if (!characterId) return {}
-      const response = await Characters.getById(characterId)
-      return response.data ? response.data : {}
+      if (!characterId) return null
+      const response = await Characters.getById(Number(characterId))
+      return response ?? null
     },
     enabled: !!characterId,
     staleTime: 60000 // Cache results for 1 minute

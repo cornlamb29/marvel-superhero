@@ -4,7 +4,7 @@ import { Response, Request } from 'express'
 const JWT_SECRET = process.env.JWT_SECRET || 'corn'
 const COOKIE_NAME = 'auth'
 
-interface UserPayload {
+export interface UserPayload {
   id: number
   email: string
 }

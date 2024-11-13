@@ -1,3 +1,13 @@
+enum TeamMemberType {
+  LEADER = 'leader',
+  ENFORCER = 'enforcer',
+  OPERATIVE = 'operative',
+  INNOVATOR = 'innovator'
+}
+interface CharacterTeam {
+  type: TeamMemberType
+}
+
 export interface MarvelCharacter {
   id: number
   name: string
@@ -30,13 +40,7 @@ export interface MarvelCharacter {
     returned: number
   }
   urls: Array<{ type: string; url: string }>
-}
-
-enum TeamMemberType {
-  LEADER = 'leader',
-  ENFORCER = 'enforcer',
-  OPERATIVE = 'operative',
-  INNOVATOR = 'innovator'
+  CharacterTeam: CharacterTeam
 }
 
 export type TeamPositions = {

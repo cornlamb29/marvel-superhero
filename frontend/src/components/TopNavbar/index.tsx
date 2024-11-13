@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { AppBar, Toolbar, TextField, Button, Box, Typography, Link } from '@mui/material'
 import { jwtDecode } from 'jwt-decode'
+import Cookies from 'js-cookie'
 import { useCurrentUser } from '@/store/auth'
 import useApi from '@/hooks/Api/useApi'
-import Cookies from 'js-cookie'
+import { UserJWTPayload } from '@/store/auth/types'
 import './style.scss'
 
 
@@ -24,7 +25,7 @@ const TopNavBar = (): React.ReactElement => {
       const token = Cookies.get('auth')
       if (token) {
         try {
-          const decoded = jwtDecode(token)
+          const decoded = jwtDecode(token) as UserJWTPayload
           setCurrentUser(decoded)
           setUsername('')
           setPassword('')
@@ -60,13 +61,13 @@ const TopNavBar = (): React.ReactElement => {
             >
               My Teams
             </Link>
-            <Typography>Logged in as {currentUser.email}</Typography>
+            <Typography>Logged in as { currentUser.email }</Typography>
           </>) : (<>
             <TextField
               label="Username"
               variant="outlined"
               size="small"
-              value={username}
+              value={ username }
               onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
@@ -74,13 +75,13 @@ const TopNavBar = (): React.ReactElement => {
               type="password"
               variant="outlined"
               size="small"
-              value={password}
+              value={ password }
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button 
               variant="contained" 
               color="secondary" 
-              onClick={() => login()}
+              onClick={ () => login() }
             >
               Login
             </Button>

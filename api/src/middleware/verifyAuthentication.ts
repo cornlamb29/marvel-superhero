@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
-import { getUserFromRequest } from '../utils/auth'
+import { getUserFromRequest, UserPayload } from '../utils/auth'
+
+declare module 'express' {
+  interface Request {
+    user: UserPayload
+  }
+}
 
 export const verifyAuthentication = (req: Request, res: Response, next: NextFunction) => {
   const user = getUserFromRequest(req)

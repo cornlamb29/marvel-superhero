@@ -15,17 +15,23 @@ interface TeamCreationBody {
   }
 }
 
-// Extend Request type to include jwt user
+// Add this interface
+interface UserPayload extends JwtPayload {
+  id: number
+  email: string
+}
+
+// Update AuthRequest to use UserPayload
 interface AuthRequest extends Request {
-  user?: JwtPayload
+  user: UserPayload
 }
 
 /**
  * Controller to get all characters
- * @param {Request} req - Request object
+ * @param {Request} _req - Request object
  * @param {Response} res - Response object
  */
-export const getAllCharacters = async (req: Request, res: Response): Promise<void> => {
+export const getAllCharacters = async (_req: Request, res: Response): Promise<void> => {
   try {
     const data = await MarvelCharacter.findAll()
     res.status(200).json({data})
@@ -138,11 +144,13 @@ export const getUserTeams = async (req: AuthRequest, res: Response): Promise<voi
   }
 
   try {
+
     const teams = await Team.findAll({
       where: { user_id: userId },
       include: [{
         model: MarvelCharacter,
         through: {
+          // @ts-ignore
           model: CharacterTeam,
           attributes: ['type']
         }

@@ -1,7 +1,7 @@
 import express, { Application } from 'express'
 import bodyParser from 'body-parser'
-import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import characterRoutes from './routes/characters'
 import userRoutes from './routes/users'
 

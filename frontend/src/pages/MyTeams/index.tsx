@@ -20,7 +20,7 @@ const MyTeams = () => {
     <article className="my-teams">
       <h1>My Teams</h1>
       <Tiles>
-        {teams?.data.map((team: Team) => (
+        {teams?.map((team: Team) => (
           <HeroTile
             key={team.id}
             title={team.name}
