@@ -1,0 +1,26 @@
+.my-teams {
+  margin-top: 100px;
+  .image-wrapper {
+    position: relative;
+    text-align: center;
+
+    img {
+      opacity: 0.3;
+      width: 250px;
+      height: 75px;
+    }
+
+    .text-overlay-name,
+    .text-overlay-type {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .text-overlay-type {
+      bottom: 20px;
+    }
+  }
+}

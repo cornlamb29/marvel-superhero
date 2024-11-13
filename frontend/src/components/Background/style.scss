@@ -1,0 +1,34 @@
+.hero-bg {
+  position: absolute;
+  left: 0;
+  background: url('/images/grid.png') center fixed #000000;
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  z-index: -1;
+
+
+  &::before {
+    content: '';
+    position: absolute;
+    filter: blur(200px);
+    background-color: #ff9134;
+    opacity: .36;
+    width: 700px;
+    height: calc(100vh);
+    inset: 0% auto auto 0;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    opacity: .69;
+    filter: blur(250px);
+    background-color: #b3beff;
+    width: 700px;
+    height: calc(100vh);
+    inset: 0 0 -22% auto;
+    z-index: 0;
+  }
+}

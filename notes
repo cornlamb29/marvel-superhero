@@ -1,0 +1,111 @@
+BEGIN;
+CREATE SCHEMA marvel_app;
+GRANT USAGE ON SCHEMA marvel_app TO postgres;
+
+-- Set search path
+SET search_path TO marvel_app, public;
+
+-- Create tables in the marvel_app schema
+CREATE TABLE marvel_characters (
+    id INT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    modified TIMESTAMP,
+    thumbnail VARCHAR(255),
+    comics JSONB,
+    series JSONB,
+    stories JSONB,
+    events JSONB,
+    urls JSONB,
+    resource_uri VARCHAR(255)
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255)
+);
+
+CREATE TABLE teams (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE character_role AS ENUM ('leader', 'enforcer', 'operative', 'innovator');
+CREATE TABLE character_teams (
+    id SERIAL PRIMARY KEY,
+    team_id INT REFERENCES teams(id) ON DELETE CASCADE,
+    character_id INT REFERENCES marvel_characters(id) ON DELETE CASCADE,
+    type character_role NOT NULL;
+);
+
+-- Grant privileges and set default privileges
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA marvel_app TO postgres;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA marvel_app TO postgres;
+ALTER DEFAULT PRIVILEGES IN SCHEMA marvel_app GRANT ALL PRIVILEGES ON TABLES TO postgres;
+ALTER DEFAULT PRIVILEGES IN SCHEMA marvel_app GRANT ALL PRIVILEGES ON SEQUENCES TO postgres;
+
+COMMIT;
+
+npm run db:migrate
+npm run db:migrate:undo
+npm run db:seed
+npm run db:migrate
+npm run db:migrate:undo
+
+npx sequelize-cli db:seed --seed src/seeders/20241111041030-data-marvel-characters.ts
+
+cd frontend
+npm install
+npm run dev
+
+npm run type-check
+========================
+Title: Comic Book Cover: [Team Name or Theme, e.g., "The Avengers United"]
+
+Description: Create a dynamic comic book cover for a Marvel superhero team featuring four characters in the roles of Leader, Enforcer, Operative, and Innovator. Each character should embody their role through their stance, expression, and appearance, while staying true to the style and power set of Marvel characters. Make the cover visually bold, vibrant, and action-packed, with a sense of teamwork and individual power.
+
+Characters and Roles:
+
+Leader:
+Name: [Leader’s Name]
+Description: [A few words on their power, personality, and any specific traits that convey leadership, e.g., strategic and fearless, strong yet calm.]
+Pose/Position: Positioned centrally, exhibiting authority, perhaps with a hand raised or a confident gaze.
+Enforcer:
+Name: [Enforcer’s Name]
+Description: [A few words on their power, physical presence, and demeanor, e.g., powerful, determined, heavily armored.]
+Pose/Position: Standing powerfully with a solid stance, ready to defend or attack.
+Operative:
+Name: [Operative’s Name]
+Description: [A few words on their agility, stealth, and intelligence, e.g., swift, calculated, lurking in the background or slightly to the side.]
+Pose/Position: Posed ready to spring into action, with a sleek and agile stance, possibly crouching or in motion.
+Innovator:
+Name: [Innovator’s Name]
+Description: [A few words on their intelligence, creativity, and unique powers, e.g., tech-savvy, holding a device, or with a thoughtful expression.]
+Pose/Position: Positioned as if observing or analyzing, perhaps holding a gadget or using an ability in a creative way.
+Additional Instructions:
+
+Style: Comic book art style with bold outlines, vibrant colors, and energetic motion lines.
+Setting: [Specify any background details, such as a futuristic city, space, or an action-packed battlefield if desired.]
+Team Theme: [Optional: add any unifying theme, e.g., "urban defenders," "cosmic warriors," or "modern-day heroes."]
+Text on Cover (optional): Display the team’s name prominently at the top and the issue number, if desired, in a corner.
+
+==============================
+
+
+
+developer.marvel.com
+
+The Visionary Leader: This hero possesses a powerful combination of charisma, strategic foresight, and a strong moral compass. They inspire the team, make tough calls, and see the “big picture” in every mission. Their powers could include limited precognition, enhanced persuasion, or even a unique bond with each team member, allowing them to amplify everyone’s abilities. They may not be the strongest or fastest, but their unwavering dedication to the mission and their team make them a respected leader.
+
+The Enforcer: This hero is the team’s powerhouse and frontline protector. They have incredible strength, resilience, and combat skills, making them perfect for handling direct threats and overwhelming enemies. The Enforcer might have super strength, advanced body armor, or the ability to absorb and channel energy, making them both a tank and a major offensive player.
+
+The Swift Operative: Agile, stealthy, and clever, this hero specializes in quick, surgical interventions. They excel at recon, sabotage, and finding creative solutions in high-stakes situations. Powers could include super speed, short-range teleportation, or heightened reflexes. The Swift Operative can dart in and out of danger, delivering critical intel or rescuing civilians as needed.
+
+The Innovator: A tech genius or mystical expert, this hero fills any gaps with their resourcefulness. They create gadgets, enhance the team’s abilities with technology or magic, and solve complex problems the others might overlook. The Innovator’s powers might be based on advanced tech (like drones, holograms, or cyber interfaces) or mystical knowledge that allows them to control energy fields or even access alternate dimensions for quick escapes or reinforcements.
+
+
+
