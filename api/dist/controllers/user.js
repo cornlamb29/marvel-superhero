@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.signup = void 0;
+exports.logout = exports.login = exports.signup = void 0;
 const models_1 = __importDefault(require("../models"));
 const auth_1 = require("../utils/auth");
 const User = models_1.default.User;
@@ -21,6 +21,7 @@ const signup = async (req, res) => {
         res.status(201).json({ message: 'User created successfully', user });
     }
     catch (error) {
+        console.error('Error creating user: ', error);
         res.status(500).json({ message: 'Error creating user', error: error instanceof Error ? error.message : 'Unknown error' });
     }
 };
@@ -35,10 +36,10 @@ const login = async (req, res) => {
     try {
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            res.status(401).json({ message: 'Invalid email or password' });
         }
         if (!(await user.validatePassword(password))) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            res.status(401).json({ message: 'Invalid email or password' });
         }
         (0, auth_1.setAuthCookie)(res, { id: user.id, email: user.email });
         res.status(200).json({ message: 'User logged in successfully', user });
@@ -48,3 +49,13 @@ const login = async (req, res) => {
     }
 };
 exports.login = login;
+/**
+ * Controller to logout a user
+ * @param {Request} req - Request object
+ * @param {Response} res - Response object
+ */
+const logout = async (req, res) => {
+    (0, auth_1.clearAuthCookie)(res);
+    res.status(200).json({ message: 'User logged out successfully' });
+};
+exports.logout = logout;

@@ -36,6 +36,7 @@ export const getAllCharacters = async (_req: Request, res: Response): Promise<vo
     const data = await MarvelCharacter.findAll()
     res.status(200).json({data})
   } catch (error) {
+    console.error('Error getting all characters', error)
     res.status(500).json({ message: 'Error retrieving characters', error })
   }
 }
@@ -54,6 +55,7 @@ export const getCharacterById = async (req: Request, res: Response): Promise<voi
       res.status(404).json({ message: 'Character not found' })
     }
   } catch (error) {
+    console.error('Error getting character', error)
     res.status(500).json({ message: 'Error retrieving character', error })
   }
 }
@@ -79,6 +81,7 @@ export const getCharacterByName = async (req: Request, res: Response): Promise<v
       res.status(404).json({ message: 'Character not found' })
     }
   } catch (error) {
+    console.error('Error retrieving character', error)
     res.status(500).json({ message: 'Error retrieving character', error })
   }
 }

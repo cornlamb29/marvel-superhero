@@ -12,8 +12,8 @@ const userFromToken = selector<UserJWTPayload | null>({
     
     try {
       return jwtDecode(token) as UserJWTPayload
-    } catch (e) {
-      console.error('Invalid JWT token:', e)
+    } catch (error) {
+      console.error('Invalid JWT token:', error)
       return null
     }
   }

@@ -63,12 +63,9 @@ const Navbar = (): React.ReactElement => {
   })
 
   const { mutate: createTeam } = useMutation({
-    mutationFn: () => Characters.createTeam(teamName, Object.keys(teamPosition).reduce((acc, key) => {
-      const position = key.split(' ')?.pop()?.toLowerCase() || ''
-      if (position in acc) {
-        const value = teamPosition[key as keyof TeamPositionsState]
-        acc[position as keyof TeamPositions] = value ? Number(value) : undefined
-      }
+    mutationFn: () => Characters.createTeam(teamName, Object.entries(teamPosition).reduce((acc: TeamPositions, [key, value]) => {
+      const position = key.split(' ')?.pop()?.toLowerCase() as keyof TeamPositions
+      acc[position] = Number(value)
       return acc
     }, {} as TeamPositions)),
     onSuccess: () => {
@@ -192,7 +189,7 @@ const Navbar = (): React.ReactElement => {
           Create
         </Button>
 
-        <SignupDialog showSignup={showSignup} onClose={() => setShowSignup(false)} onSignup={handleSubmit} />
+        <SignupDialog showSignup={showSignup} onClose={() => setShowSignup(false)} onSignup={() => { createTeam() }} />
       </Box>
     </nav>
   )

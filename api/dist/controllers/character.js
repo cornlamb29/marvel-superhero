@@ -11,15 +11,16 @@ const Team = models_1.default.Team;
 const CharacterTeam = models_1.default.CharacterTeam;
 /**
  * Controller to get all characters
- * @param {Request} req - Request object
+ * @param {Request} _req - Request object
  * @param {Response} res - Response object
  */
-const getAllCharacters = async (req, res) => {
+const getAllCharacters = async (_req, res) => {
     try {
         const data = await MarvelCharacter.findAll();
         res.status(200).json({ data });
     }
     catch (error) {
+        console.error('Error getting all characters', error);
         res.status(500).json({ message: 'Error retrieving characters', error });
     }
 };
@@ -40,6 +41,7 @@ const getCharacterById = async (req, res) => {
         }
     }
     catch (error) {
+        console.error('Error getting character', error);
         res.status(500).json({ message: 'Error retrieving character', error });
     }
 };
@@ -66,6 +68,7 @@ const getCharacterByName = async (req, res) => {
         }
     }
     catch (error) {
+        console.error('Error retrieving character', error);
         res.status(500).json({ message: 'Error retrieving character', error });
     }
 };
@@ -130,6 +133,7 @@ const getUserTeams = async (req, res) => {
             include: [{
                     model: MarvelCharacter,
                     through: {
+                        // @ts-ignore
                         model: CharacterTeam,
                         attributes: ['type']
                     }

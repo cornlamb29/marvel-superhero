@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserFromRequest = exports.verifyToken = exports.setAuthCookie = exports.createUserToken = void 0;
+exports.clearAuthCookie = exports.getUserFromRequest = exports.verifyToken = exports.setAuthCookie = exports.createUserToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = process.env.JWT_SECRET || 'corn';
 const COOKIE_NAME = 'auth';
@@ -43,3 +43,7 @@ const getUserFromRequest = (req) => {
     }
 };
 exports.getUserFromRequest = getUserFromRequest;
+const clearAuthCookie = (res) => {
+    res.clearCookie(COOKIE_NAME);
+};
+exports.clearAuthCookie = clearAuthCookie;

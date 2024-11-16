@@ -1,6 +1,12 @@
 import { Model, DataTypes, Sequelize, Optional } from 'sequelize'
 import bcrypt from 'bcrypt'
 
+export interface UserInstance extends Model {
+  validatePassword(password: string): Promise<boolean>
+  id: number
+  email: string
+}
+
 interface UserAttributes {
   id: number
   email: string
@@ -12,7 +18,7 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'passwo
   password: string // Plain password, required on creation but not stored
 }
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserInstance {
   public id!: number
   public email!: string
   public password_hash!: string | null
@@ -24,7 +30,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
    * @returns true if the password is valid, false otherwise
    */
   public async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password_hash)
+    const passwordHash = this.password_hash || this.getDataValue('password_hash')
+    return bcrypt.compare(password, passwordHash)
   }
 }
 

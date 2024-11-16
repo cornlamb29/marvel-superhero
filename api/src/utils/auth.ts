@@ -47,3 +47,7 @@ export const getUserFromRequest = (req: Request): UserPayload | null => {
     return null
   }
 }
+
+export const clearAuthCookie = (res: Response): void => {
+  res.clearCookie(COOKIE_NAME)
+}

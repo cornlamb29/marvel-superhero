@@ -49,8 +49,8 @@ const fetchMarvelCharacters = async (offset = 0, limit = 20) => {
       urls: JSON.stringify(character.urls),
       resource_uri: character.resourceURI
     }))
-  } catch (e) {
-    console.error('Error fetching Marvel characters:', e)
+  } catch (error) {
+    console.error('Error fetching Marvel characters:', error)
     return []
   }
 }

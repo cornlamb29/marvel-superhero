@@ -4,13 +4,13 @@ import UserModel from './user'
 import TeamModel from './team'
 import CharacterTeamModel from './characterTeam'
 const config = require('../config/config')
-
+const env = process.env.NODE_ENV || 'development'
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
+  config[env].database,
+  config[env].username,
+  config[env].password,
   {
-    host: config.host,
+    host: config[env].host,
     dialect: 'postgres'
   }
 )

@@ -48,6 +48,7 @@ const useApi = () => {
     const Users = {
       signup: (email: string, password: string): Promise<void> => requests.post('users/signup', { email, password }),
       login: (email: string, password: string): Promise<void> => requests.post('users/login', { email, password }),
+      logout: (): Promise<void> => requests.post('users/logout', {}),
     }
 
     return {

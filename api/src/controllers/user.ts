@@ -1,16 +1,9 @@
 import { Request, Response } from 'express'
 import db from '../models'
-import { setAuthCookie } from '../utils/auth'
-import { Model } from 'sequelize'
+import { clearAuthCookie, setAuthCookie } from '../utils/auth'
+import { UserInstance } from '../models/user'
 
 const User = db.User
-
-// Add this interface
-interface UserInstance extends Model {
-  validatePassword(password: string): Promise<boolean>;
-  id: number;
-  email: string;
-}
 
 /**
  * Controller to signup a user
@@ -46,9 +39,19 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    setAuthCookie(res, { id: user.id, email: user.email })
+    setAuthCookie(res, { id: user.id ?? user.getDataValue('id'), email: user.email ?? user.getDataValue('email') })
     res.status(200).json({ message: 'User logged in successfully', user })
   } catch (error) {
     res.status(500).json({ message: 'Error logging in user', error: error instanceof Error ? error.message : 'Unknown error' })
   }
+}
+
+/**
+ * Controller to logout a user
+ * @param {Request} req - Request object
+ * @param {Response} res - Response object
+ */
+export const logout = async (req: Request, res: Response): Promise<void> => {
+  clearAuthCookie(res)
+  res.status(200).json({ message: 'User logged out successfully' })
 }

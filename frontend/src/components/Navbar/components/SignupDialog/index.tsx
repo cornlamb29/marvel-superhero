@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'  // Add this import
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Alert } from '@mui/material'
+import { AxiosError } from 'axios'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useCurrentUser } from '@/store/auth'
@@ -22,8 +23,9 @@ const SignupDialog = ({ showSignup: initialShowSignup, onClose, onSignup}: Signu
   const [password, setPassword] = useState('')
   const [, setCurrentUser] = useCurrentUser()
   const navigate = useNavigate()
+  const [errorMessage, setErrorMessage] = useState<string | JSX.Element | null>(null)
 
-  const { mutate: signupMutation, isPending } = useMutation<void, Error, void>({
+  const { mutate: signupMutation, isPending } = useMutation<void, AxiosError, void>({
     mutationFn: () => Users.signup(email, password),
     onSuccess: () => {
       const token = Cookies.get('auth')
@@ -40,8 +42,14 @@ const SignupDialog = ({ showSignup: initialShowSignup, onClose, onSignup}: Signu
       onClose()
       navigate('/my-teams')
     },
-    onError: (error) => {
-      console.error('Error signing up:', error)
+    onError: (error: AxiosError) => {
+      let message: string | JSX.Element = 'Signup failed. Please try again.'
+      if (error?.response?.data && typeof error.response.data === 'object' && ('message' in error.response.data) && ('error' in error.response.data)) {
+        message = <>{ error.response.data.message }:<br />{error.response.data.error}</> as JSX.Element
+      }
+      console.error('Error signing up:', message)
+      setErrorMessage(message)
+      
     }
   })
 
@@ -56,6 +64,11 @@ const SignupDialog = ({ showSignup: initialShowSignup, onClose, onSignup}: Signu
   return (<Dialog open={showSignup} onClose={onClose} className="dialog-wrapper">
     <DialogTitle>Create an Account</DialogTitle>
     <DialogContent>
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMessage}
+        </Alert>
+      )}
       <TextField
         autoFocus
         margin="dense"

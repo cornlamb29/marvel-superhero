@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const config_1 = __importDefault(require("../config/config"));
 const marvelCharacter_1 = __importDefault(require("./marvelCharacter"));
 const user_1 = __importDefault(require("./user"));
 const team_1 = __importDefault(require("./team"));
 const characterTeam_1 = __importDefault(require("./characterTeam"));
-const sequelize = new sequelize_1.Sequelize(config_1.default.development.database, config_1.default.development.username, config_1.default.development.password, {
-    host: config_1.default.development.host,
+const config = require('../config/config');
+const sequelize = new sequelize_1.Sequelize(config.database, config.username, config.password, {
+    host: config.host,
     dialect: 'postgres'
 });
 const db = {
