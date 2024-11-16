@@ -20,15 +20,15 @@ export const createUserToken = (user: UserPayload): string => {
 export const setAuthCookie = (res: Response, user: UserPayload): void => {
   const token = createUserToken(user)
   const webAppUrl = process.env.WEB_APP_URL || 'http://localhost:5173'
-  const url = new URL(webAppUrl)
-  const domain = url.hostname + (url.port ? `:${url.port}` : '')
+  const domain = new URL(webAppUrl).hostname
 
   res.cookie(COOKIE_NAME, token, {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    httpOnly: true,
+    secure: false,
+    sameSite: 'none',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    domain
+    domain,
+    path: '/'
   })
 }
 
