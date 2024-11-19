@@ -107,3 +107,10 @@ The Enforcer: This hero is the team’s powerhouse and front line protector. The
 The Swift Operative: Agile, stealthy, and clever, this hero specializes in quick, surgical interventions. They excel at recon, sabotage, and finding creative solutions in high-stakes situations. Powers could include super speed, short-range teleportation, or heightened reflexes. The Swift Operative can dart in and out of danger, delivering critical intel or rescuing civilians as needed.
 
 The Innovator: A tech genius or mystical expert, this hero fills any gaps with their resourcefulness. They create gadgets, enhance the team’s abilities with technology or magic, and solve complex problems the others might overlook. The Innovator’s powers might be based on advanced tech (like drones, holograms, or cyber interfaces) or mystical knowledge that allows them to control energy fields or even access alternate dimensions for quick escapes or reinforcements.
+
+
+# create ssl cert
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+-keyout /etc/ssl/private/161.35.134.126.key \
+-out /etc/ssl/certs/161.35.134.126.crt \
+-subj "/CN=161.35.134.126"

@@ -17,10 +17,12 @@ import useApi from '@/hooks/Api/useApi'
 import useDebounce from '@/hooks/debouncer'
 import { MarvelCharacter } from '@/hooks/Api/types'
 import { TeamPositionsState } from '@/store/teamPositions/types'
+import { useShowSignup } from '@/store/showSignup'
 import { PositionInfo } from '@/store/positions/types'
 import { TeamPositions } from '@/hooks/Api/types'
 import SignupDialog from './components/SignupDialog'
 import './style.scss'
+
 
 
 /**
@@ -33,7 +35,7 @@ const Navbar = (): React.ReactElement => {
   const [currentUser] = useCurrentUser()
   const [searchTerm, setSearchTerm] = useState('')
   const [teamName, setTeamName] = useState('')
-  const [showSignup, setShowSignup] = useState(false)
+  const [, setShowSignup] = useShowSignup()
   const { Characters } = useApi()
   const characterId = teamPosition[selectedPosition]
 
@@ -63,17 +65,23 @@ const Navbar = (): React.ReactElement => {
   })
 
   const { mutate: createTeam } = useMutation({
-    mutationFn: () => Characters.createTeam(teamName, Object.entries(teamPosition).reduce((acc: TeamPositions, [key, value]) => {
-      const position = key.split(' ')?.pop()?.toLowerCase() as keyof TeamPositions
-      acc[position] = Number(value)
-      return acc
-    }, {} as TeamPositions)),
+    mutationFn: () => {
+      if (!Object.values(teamPosition).every((position) => position !== null)) {
+        return Promise.reject('Invalid team positions');
+      }
+
+      return Characters.createTeam(teamName, Object.entries(teamPosition).reduce((acc: TeamPositions, [key, value]) => {
+        const position = key.split(' ')?.pop()?.toLowerCase() as keyof TeamPositions
+        acc[position] = Number(value)
+        return acc
+      }, {} as TeamPositions))
+    },
     onSuccess: () => {
       setTeamName('')
       setTeamPositions({} as TeamPositionsState)
       setSearchTerm('')
     }
-  })  
+  })
 
   const handleCharacterSelect = (_: React.SyntheticEvent, character: MarvelCharacter | null) => {
     if (!selectedPosition) return
@@ -178,6 +186,7 @@ const Navbar = (): React.ReactElement => {
           color="primary"
           onClick={handleSubmit}
           disabled={!isFormValid}
+          sx={{ color: '#fff !important' }}
           title={
             !Object.values(teamPosition).every((position) => position !== null)
               ? "Please fill all team positions"
@@ -189,7 +198,7 @@ const Navbar = (): React.ReactElement => {
           Create
         </Button>
 
-        <SignupDialog showSignup={showSignup} onClose={() => setShowSignup(false)} onSignup={() => { createTeam() }} />
+        <SignupDialog onClose={() => setShowSignup(false)} onSignup={() => { createTeam() }} />
       </Box>
     </nav>
   )

@@ -5,6 +5,7 @@ import { AxiosError } from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import Cookies from 'js-cookie'
 import { useCurrentUser } from '@/store/auth'
+import { useShowSignup } from '@/store/showSignup'
 import useApi from '@/hooks/Api/useApi'
 import { UserJWTPayload } from '@/store/auth/types'
 import './style.scss'
@@ -18,6 +19,7 @@ const TopNavBar = (): React.ReactElement => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [currentUser, setCurrentUser] = useCurrentUser()
+  const [, setShowSignup] = useShowSignup()
   const { Users } = useApi()
   const [errorMessage, setErrorMessage] = useState<string | JSX.Element | null>(null)
 
@@ -66,9 +68,25 @@ const TopNavBar = (): React.ReactElement => {
     <>
       <AppBar position="fixed" color="primary" className="top-navbar">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Link href="/" color="inherit" sx={{ textDecoration: 'none' }}>
-            <Typography variant="h6">SuperHero Team Builder</Typography>
-          </Link>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Link href="/" color="inherit" sx={{ textDecoration: 'none' }}>
+              <Typography variant="h6">SuperHero Team Builder</Typography>
+            </Link>
+            <Link 
+              href="/tutorial"
+              color="inherit" 
+              sx={{ 
+                textDecoration: 'none',
+                borderLeft: '1px solid white',
+                borderRight: '1px solid white',
+                padding: '20px 15px',
+                height: 24,
+                '&:hover': { textDecoration: 'underline' }
+              }}
+            >
+              Tutorial
+            </Link>
+          </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             {currentUser ? (<>
               <Link 
@@ -121,6 +139,14 @@ const TopNavBar = (): React.ReactElement => {
                 onClick={ () => login() }
               >
                 Login
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => setShowSignup(true)}
+                sx={{ bgcolor: 'white' }}
+              >
+                Sign Up
               </Button>
             </>)}
           </Box>

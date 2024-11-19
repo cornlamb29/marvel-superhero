@@ -23,9 +23,9 @@ export const setAuthCookie = (res: Response, user: UserPayload): void => {
   const domain = new URL(webAppUrl).hostname
 
   res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'none',
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     domain,
     path: '/'
@@ -51,4 +51,15 @@ export const getUserFromRequest = (req: Request): UserPayload | null => {
 
 export const clearAuthCookie = (res: Response): void => {
   res.clearCookie(COOKIE_NAME)
+}
+
+export const authenticateUser = async (user: UserInstance, password: string, res: Response) => {
+  if (await user.validatePassword(password)) {
+    setAuthCookie(res, { 
+      id: user.id ?? user.getDataValue('id'), 
+      email: user.email ?? user.getDataValue('email') 
+    })
+    return res.status(200).json({ message: 'User logged in successfully', user })
+  }
+  return res.status(401).json({ message: 'Invalid password' })
 }

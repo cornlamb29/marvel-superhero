@@ -10,6 +10,11 @@ export const publicRoutes: Record<string, RouteConfig> = {
     component: ComponentLoader(() => import('@/pages/Builder')),
     path: '/',
     title: 'Home Page',
+  },
+  [PublicRoutes.Tutorial]: {
+    component: ComponentLoader(() => import('@/pages/Tutorial')),
+    path: '/tutorial',
+    title: 'Tutorial',
   }
 }
 

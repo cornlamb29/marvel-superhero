@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Alert } from '@mui/material'
@@ -6,6 +6,7 @@ import { AxiosError } from 'axios'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useCurrentUser } from '@/store/auth'
+import { useShowSignup } from '@/store/showSignup'
 import useApi from '@/hooks/Api/useApi'
 import { UserJWTPayload } from '@/store/auth/types'
 import { SignupDialogProps } from './props'
@@ -16,9 +17,9 @@ import './style.scss'
  * @description The signup dialog component
  * @returns {React.ReactElement}
  */
-const SignupDialog = ({ showSignup: initialShowSignup, onClose, onSignup}: SignupDialogProps) => {
+const SignupDialog = ({ onClose, onSignup}: SignupDialogProps) => {
   const { Users } = useApi()
-  const [showSignup, setShowSignup] = useState(initialShowSignup)
+  const [showSignup, setShowSignup] = useShowSignup()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [, setCurrentUser] = useCurrentUser()
@@ -56,10 +57,6 @@ const SignupDialog = ({ showSignup: initialShowSignup, onClose, onSignup}: Signu
   const handleSignup = () => {
     signupMutation()
   }
-
-  useEffect(() => {
-    setShowSignup(initialShowSignup)
-  }, [initialShowSignup])
 
   return (<Dialog open={showSignup} onClose={onClose} className="dialog-wrapper">
     <DialogTitle>Create an Account</DialogTitle>

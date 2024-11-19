@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import db from '../models'
-import { clearAuthCookie, setAuthCookie } from '../utils/auth'
+import { clearAuthCookie, setAuthCookie, authenticateUser } from '../utils/auth'
 import { UserInstance } from '../models/user'
 
 const User = db.User
@@ -13,9 +13,14 @@ const User = db.User
 export const signup = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body
   try {
-    const user = await User.create({ email, password })
+    const existingUser = await User.findOne({ where: { email } }) as UserInstance
+    
+    if (existingUser) {
+      authenticateUser(existingUser, password, res)
+      return
+    }
 
-    // Set the auth cookie after successful signup
+    const user = await User.create({ email, password })
     setAuthCookie(res, { id: user.getDataValue('id'), email: user.getDataValue('email') })
     res.status(201).json({ message: 'User created successfully', user })
   } catch (error) {
@@ -34,13 +39,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const user = await User.findOne({ where: { email } }) as UserInstance
     if (!user) {
       res.status(401).json({ message: 'Invalid email or password' })
+      return
     }
-    if (!(await user.validatePassword(password))) {
-      res.status(401).json({ message: 'Invalid email or password' })
-    }
-
-    setAuthCookie(res, { id: user.id ?? user.getDataValue('id'), email: user.email ?? user.getDataValue('email') })
-    res.status(200).json({ message: 'User logged in successfully', user })
+    authenticateUser(user, password, res)
   } catch (error) {
     res.status(500).json({ message: 'Error logging in user', error: error instanceof Error ? error.message : 'Unknown error' })
   }

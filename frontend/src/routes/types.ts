@@ -1,9 +1,10 @@
 export enum PublicRoutes {
-  Builder
+  Builder = 'builder',
+  Tutorial = 'tutorial',
 }
 
 export enum PrivateRoutes {
-  MyTeams
+  MyTeams = 'my-teams',
 }
 
 export interface RouteConfig {
